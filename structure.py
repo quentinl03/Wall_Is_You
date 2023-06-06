@@ -64,7 +64,8 @@ class Room:
         return self.c
     
     def rotate(self):
-        self.val = (self.val[0], self.val[1], self.val[2], self.val[3])
+        self.val = (self.val[3], self.val[0], self.val[1], self.val[2])
+        self.c = self.c + "1rota" # a motif
 
 class WallIsYou:
     def __init__(self, map: str) -> None:
