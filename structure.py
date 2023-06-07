@@ -4,13 +4,16 @@ from pprint import pprint
 class DocumentError(Exception):
     pass
 
-class AdventurerError(DocumentError):
+class EntityError(DocumentError):
     pass
 
-class TreasureError(DocumentError):
+class AdventurerError(EntityError):
     pass
 
-class DragonError(DocumentError):
+class TreasureError(EntityError):
+    pass
+
+class DragonError(EntityError):
     pass
 
 class Room:
@@ -64,29 +67,35 @@ class Room:
 class Entity:
     def __init__(self, level: int, x: int, y: int) -> None:
         self.level = level
+        if x < 0 or y < 0:
+            raise EntityError("Coordinates must be positive")
         self.x = x
         self.y = y
 
 class Dragon(Entity):
     def __init__(self, level: int, x: int, y: int) -> None:
+        if level < 1:
+            raise DragonError("Dragon level must be higher than 1")
         super().__init__(level, x, y)
 
     def __repr__(self) -> str:
-        return f"Dragon lv: {self.level} {self.x, self.y}"
+        return f"Dragon: lv{self.level} {self.x, self.y}"
 
 class Treasure(Entity):
     def __init__(self, level: int, x: int, y: int) -> None:
         super().__init__(level, x, y)
 
     def __repr__(self) -> str:
-        return f"Treasure lv: {self.level} {self.x, self.y}"
+        return f"Treasure: {self.x, self.y}"
 
 class Adventurer(Entity):
     def __init__(self, level: int, x: int, y: int) -> None:
+        if level < 0:
+            raise DragonError("Adventurer level must be positive")
         super().__init__(level, x, y)
 
     def __repr__(self) -> str:
-        return f"Charcater lv: {self.level, (self.x, self.y)}"
+        return f"Charcater: lv{self.level} {self.x, self.y}"
 
 
 class WallIsYou:
@@ -133,7 +142,8 @@ class WallIsYou:
                         self.drags.append(Dragon(lv, x, y))
                     except ValueError:
                         raise DragonError(
-                            f"The {len(self.drags) + 1}th dragon line is incorrectly written"
+                            f"The {len(self.drags) + 1}"
+                            "th dragon line is incorrectly written"
                         )
 
                 elif line[0] == 'T':
@@ -153,6 +163,7 @@ class WallIsYou:
 
 if __name__ == "__main__":
     if len(sys.argv) <= 1:
+        print("You have to chose a valipe map")
         exit()
     game = WallIsYou(sys.argv[1])
     pprint(game.board)
