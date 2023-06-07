@@ -67,6 +67,37 @@ class Room:
         self.val = (self.val[3], self.val[0], self.val[1], self.val[2])
         self.c = self.c + "1rota" # a motif
 
+class Entity:
+    def __init__(self, level: int, x: int, y: int) -> None:
+        self.level = level
+        self.x = x
+        self.y = y
+
+    def __repr__(self) -> str:
+        return f"Entity lv: {self.level}\n"
+
+class Dragon(Entity):
+    def __init__(self, level: int, x: int, y: int) -> None:
+        super().__init__(level, x, y)
+
+    def __repr__(self) -> str:
+        return f"Dragon lv: {self.level}\n"
+
+class Treasure(Entity):
+    def __init__(self, level: int, x: int, y: int) -> None:
+        super().__init__(level, x, y)
+
+    def __repr__(self) -> str:
+        return f"Treasure lv: {self.level}\n"
+
+class Adventurer(Entity):
+    def __init__(self, level: int, x: int, y: int) -> None:
+        super().__init__(level, x, y)
+
+    def __repr__(self) -> str:
+        return f"Charcater lv: {self.level}\n"
+
+
 class WallIsYou:
     def __init__(self, map: str) -> None:
         self.board = list()
