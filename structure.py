@@ -16,54 +16,39 @@ class DragonError(DocumentError):
 class Room:
     def __init__(self, c: str) -> None:
         self.is_ocupated = False
+        self.c = c
         match c:
             case "╨":
-                self.c = "╨"
                 self.val = (True, False, False, False)
             case "╞":
-                self.c = "╞"
                 self.val = (False, True, False, False)
             case "╥":
-                self.c = "╥"
                 self.val = (False, False, True, False)
             case "╡":
-                self.c = "╡"
                 self.val = (False, False, False, True)
             case "╚":
-                self.c = "╚"
                 self.val = (True, True, False, False)
             case "╔":
-                self.c = "╔"
                 self.val = (False, True, True, False)
             case "╗":
-                self.c = "╗"
                 self.val = (False, False, True, True)
             case "╝":
-                self.c = "╝"
                 self.val = (True, False, False, True)
             case "╠":
-                self.c = "╠"
                 self.val = (True, True, True, False)
             case "╦":
-                self.c = "╦"
                 self.val = (False, True, True, True)
             case "╣":
-                self.c = "╣"
                 self.val = (True, False, True, True)
             case "╩":
-                self.c = "╩"
                 self.val = (True, True, False, True)
             case "║":
-                self.c = "║"
                 self.val = (True, False, True, False)
             case "═":
-                self.c = "═"
                 self.val = (False, True, False, True)
             case "╬":
-                self.c = "╬"
                 self.val = (True, True, True, True)
             case _:
-                self.c = c
                 self.val = None
 
     def __str__(self) -> str:
@@ -87,14 +72,14 @@ class Dragon(Entity):
         super().__init__(level, x, y)
 
     def __repr__(self) -> str:
-        return f"Dragon lv: {self.level, (self.x, self.y)}"
+        return f"Dragon lv: {self.level} {self.x, self.y}"
 
 class Treasure(Entity):
     def __init__(self, level: int, x: int, y: int) -> None:
         super().__init__(level, x, y)
 
     def __repr__(self) -> str:
-        return f"Treasure lv: {self.level, (self.x, self.y)}"
+        return f"Treasure lv: {self.level} {self.x, self.y}"
 
 class Adventurer(Entity):
     def __init__(self, level: int, x: int, y: int) -> None:
@@ -111,10 +96,6 @@ class WallIsYou:
         self.drags = list()
         self.treasure_limit = None
         self.treasure = None
-
-
-
-
         self.open_map(file)
 
     def open_map(self, file: str):
@@ -139,22 +120,21 @@ class WallIsYou:
                             "The file can only contain one adventurer"
                         )
                     try:
-                        lv, x, y = tuple(map(int, line[1:].split()))
+                        x, y, lv = tuple(map(int, line[1:].split()))
                         self.adv = Adventurer(lv, x, y)
                     except ValueError:
                         raise AdventurerError(
                             "The adventurer line is incorrectly written"
                         )
-                    
+
                 elif line[0] == 'D':
                     try:
-                        lv, x, y = tuple(map(int, line[1:].split()))
+                        x, y, lv = tuple(map(int, line[1:].split()))
                         self.drags.append(Dragon(lv, x, y))
                     except ValueError:
                         raise DragonError(
-                            f"The {len(self.drag)} dragon line is incorrectly written"
+                            f"The {len(self.drags) + 1}th dragon line is incorrectly written"
                         )
-       
 
                 elif line[0] == 'T':
                     if self.treasure is not None:
