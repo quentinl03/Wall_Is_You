@@ -24,9 +24,9 @@ def open_map(wis : strc.WallIsYou):
                         "The file can only contain one adventurer"
                     )
                 try:
-                    x, y, lv = tuple(map(int, line[1:].split()))
+                    y, x, lv = tuple(map(int, line[1:].split()))
                     wis.adv = strc.Adventurer(lv, x, y)
-                    wis.board[x][y].got_adv = True
+                    wis.board[y][x].got_adv = True
                 except ValueError:
                     raise strc.AdventurerError(
                         "The adventurer line is incorrectly written"
@@ -34,9 +34,9 @@ def open_map(wis : strc.WallIsYou):
 
             elif line[0] == 'D':
                 try:
-                    x, y, lv = tuple(map(int, line[1:].split()))
+                    y, x, lv = tuple(map(int, line[1:].split()))
                     wis.drags.append(strc.Dragon(lv, x, y))
-                    wis.board[x][y].got_drag = True
+                    wis.board[y][x].got_drag = True
                 except ValueError:
                     raise strc.DragonError(
                         f"The {len(wis.drags) + 1}"
@@ -49,9 +49,9 @@ def open_map(wis : strc.WallIsYou):
                         "The file can only contain one treasure"
                     )
                 try:
-                    x, y = tuple(map(int, line[1:].split()))
+                    y, x = tuple(map(int, line[1:].split()))
                     wis.treasure = strc.Treasure(-1, x, y)
-                    wis.board[x][y].got_trea = True
+                    wis.board[y][x].got_trea = True
                 except ValueError:
                     raise strc.TreasureError(
                         "The treasure line is incorrectly written"
@@ -60,3 +60,5 @@ def open_map(wis : strc.WallIsYou):
                 raise strc.DocumentError(
                     f"The first character is invalid in the {acc_lines + 1}th line"
                 )
+    wis.height = len(wis.board)
+    wis.width = len(wis.board[0])

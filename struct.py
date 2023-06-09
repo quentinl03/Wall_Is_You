@@ -112,6 +112,8 @@ class Adventurer(Entity):
 
 class WallIsYou:
     def __init__(self, file: str) -> None:
+        self.height = 0
+        self.width = 0
         self.file = file
         self.board = list()
         self.adv = None
