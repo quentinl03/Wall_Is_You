@@ -24,8 +24,13 @@ def open_map(wis : strc.WallIsYou):
                         "The file can only contain one adventurer"
                     )
                 try:
-                    y, x, lv = tuple(map(int, line[1:].split()))
-                    wis.adv = strc.Adventurer(lv, x, y)
+                    t_adv = tuple(map(int, line[1:].split()))
+                    if len(t_adv) == 2: #no level for the adv (1st load)
+                        y, x = t_adv
+                        wis.adv = strc.Adventurer(y, x)
+                    else: #level for the adv (save)
+                        y, x, lv = t_adv
+                        wis.adv = strc.Adventurer(y, x, lv)
                     wis.board[y][x].got_adv = True
                 except ValueError:
                     raise strc.AdventurerError(
@@ -35,26 +40,12 @@ def open_map(wis : strc.WallIsYou):
             elif line[0] == 'D':
                 try:
                     y, x, lv = tuple(map(int, line[1:].split()))
-                    wis.drags.append(strc.Dragon(lv, x, y))
+                    wis.drags.append(strc.Dragon(y, x, lv))
                     wis.board[y][x].got_drag = True
                 except ValueError:
                     raise strc.DragonError(
                         f"The {len(wis.drags) + 1}"
                         "th dragon line is incorrectly written"
-                    )
-
-            elif line[0] == 'T':
-                if wis.treasure is not None:
-                    raise strc.TreasureError(
-                        "The file can only contain one treasure"
-                    )
-                try:
-                    y, x = tuple(map(int, line[1:].split()))
-                    wis.treasure = strc.Treasure(-1, x, y)
-                    wis.board[y][x].got_trea = True
-                except ValueError:
-                    raise strc.TreasureError(
-                        "The treasure line is incorrectly written"
                     )
             else:
                 raise strc.DocumentError(

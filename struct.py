@@ -63,7 +63,9 @@ class Room:
 
 @total_ordering
 class Entity:
-    def __init__(self, level: int, x: int, y: int) -> None:
+    def __init__(self, y: int, x: int, level: int = 0) -> None:
+        if level < 0:
+            raise DragonError("Entity level must be positive")
         self.level = level
         if x < 0 or y < 0:
             raise EntityError("Coordinates must be positive")
@@ -89,7 +91,7 @@ class Entity:
     #     return self.level == -1 or self.level >= other.level
 
 class Dragon(Entity):
-    def __init__(self, level: int, x: int, y: int) -> None:
+    def __init__(self, y: int, x: int, level: int = 0) -> None:
         if level < 1:
             raise DragonError("Dragon level must be higher than 1")
         super().__init__(level, x, y)
@@ -102,11 +104,6 @@ class Treasure(Entity):
         return f"Treasure: {self.x, self.y}"
 
 class Adventurer(Entity):
-    def __init__(self, level: int, x: int, y: int) -> None:
-        if level < 0:
-            raise DragonError("Adventurer level must be positive")
-        super().__init__(level, x, y)
-
     def __repr__(self) -> str:
         return f"Charcater: lv{self.level} {self.x, self.y}"
 

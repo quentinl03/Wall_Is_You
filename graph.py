@@ -16,7 +16,8 @@ THICKNESS = 10 // DIVISEUR
 REDUCE_IMG = .5 / DIVISEUR
 
 def draw_back(x: int, y: int) -> None:
-    fltk.image(x, y,
+    fltk.image(x * WIDTH_CASE,
+               y * HEIGHT_CASE,
                "./media/fond.png",
                largeur = WIDTH_CASE,
                hauteur = HEIGHT_CASE,
@@ -63,6 +64,8 @@ def draw_corner_SW(x: int, y: int) -> None:
                    remplissage="Black")
 
 def draw_corners(x: int, y: int) -> None:
+    x = x * WIDTH_CASE
+    y = y * HEIGHT_CASE
     draw_corner_NW(x, y)
     draw_corner_NE(x + WIDTH_CASE, y)
     draw_corner_SE(x + WIDTH_CASE, y + HEIGHT_CASE)
@@ -73,30 +76,40 @@ def draw_wall_N(x: int, y: int) -> None:
                    y,
                    x + 3 * WIDTH_CASE / 4,
                    y + THICKNESS,
-                   remplissage="Black")
+                   remplissage = "Black",
+                   tag = f"W({x}{y})N"
+                   )
 
 def draw_wall_E(x: int, y: int) -> None:
     fltk.rectangle(x + WIDTH_CASE,
                    y + HEIGHT_CASE / 4,
                    x + WIDTH_CASE - THICKNESS,
                    y + 3 * HEIGHT_CASE / 4,
-                   remplissage="Black")
+                   remplissage="Black",
+                   tag = f"W({x}{y})E"
+                   )
 
 def draw_wall_S(x: int, y: int) -> None:
     fltk.rectangle(x + WIDTH_CASE / 4,
                    y + HEIGHT_CASE,
                    x + 3 * WIDTH_CASE / 4 ,
                    y + HEIGHT_CASE - THICKNESS,
-                   remplissage="Black")
+                   remplissage="Black",
+                   tag = f"W({x}{y})S"
+                   )
 
 def draw_wall_W(x: int, y: int) -> None:
     fltk.rectangle(x,
                    y + HEIGHT_CASE / 4,
                    x + THICKNESS ,
                    y + 3 * HEIGHT_CASE / 4,
-                   remplissage="Black")
+                   remplissage="Black",
+                   tag = f"W({x}{y})W"
+                   )
 
 def draw_walls(x: int, y: int, walls: tuple) -> None:
+    x = x * WIDTH_CASE
+    y = y * HEIGHT_CASE
     tab_f = [draw_wall_N,
             draw_wall_E,
             draw_wall_S,
@@ -104,18 +117,30 @@ def draw_walls(x: int, y: int, walls: tuple) -> None:
     ]
     for i, elem in enumerate(walls):
         if elem is False:
-            tab_f[i](x,y)
+            tab_f[i](x, y)
+
+def erase_walls(x: int, y: int, walls: tuple):
+    x = x * WIDTH_CASE
+    y = y * HEIGHT_CASE
+    for i, elem in enumerate(walls):
+        if elem is False and i == Dir.NORTH:
+            fltk.efface(f"W({x}{y})N")
+        elif elem is False and i == Dir.EAST:
+            fltk.efface(f"W({x}{y})E")
+        elif elem is False and i == Dir.SOUTH:
+            fltk.efface(f"W({x}{y})S")
+        elif elem is False and i == Dir.WEST :
+            fltk.efface(f"W({x}{y})W")
 
 def draw_room(x: int, y: int, r: struct.Room) -> None:
-    start_x = x * WIDTH_CASE
-    start_y = y * HEIGHT_CASE
-    draw_back(start_x, start_y)
-    draw_corners(start_x, start_y)
-    draw_walls(start_x, start_y, r.val)
+    draw_back(x, y)
+    draw_corners(x, y)
+    draw_walls(x, y, r.val)
 
 def draw_level(x: int, y: int, lv: int):
     start_x = x * WIDTH_CASE + 2 * WIDTH_CASE / 3
     start_y = y * HEIGHT_CASE + 2 * THICKNESS
+    # (lv // 10 + 1) pour gerer les levels a plusieurs chiffres
     fltk.rectangle(start_x, start_y,
                 start_x + THICKNESS * (lv // 10 + 1),
                 start_y + 2 * THICKNESS,
@@ -135,7 +160,7 @@ def draw_adv(adv: struct.Adventurer) -> None:
     draw_entity(adv.x, adv.y, "./media/Knight_s_resized.png")
     draw_level(adv.x, adv.y, adv.level)
 
-def draw_drags(lst_drags: list()) -> None:
+def draw_drags(lst_drags: list[struct.Dragon]) -> None:
     for elem in lst_drags:
         draw_entity(elem.x, elem.y, "./media/Dragon_s.png")
         draw_level(elem.x, elem.y, elem.level)
@@ -149,4 +174,5 @@ def draw_game(wis: struct.WallIsYou) -> None:
             draw_room(x, y, wis.board[y][x])
     draw_adv(wis.adv)
     draw_drags(wis.drags)
-    draw_treasure(wis.treasure)
+    if wis.treasure:
+        draw_treasure(wis.treasure)
