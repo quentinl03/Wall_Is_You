@@ -1,12 +1,5 @@
 import struct
 import fltk
-from enum import IntEnum
-
-class Dir(IntEnum):
-    NORTH = 0
-    EAST = 1
-    SOUTH = 2
-    WEST = 3
 
 #100 est la taille des images
 DIVISEUR = 1
@@ -77,8 +70,7 @@ def draw_wall_N(x: int, y: int) -> None:
                    x + 3 * WIDTH_CASE / 4,
                    y + THICKNESS,
                    remplissage = "Black",
-                   tag = f"W({x}{y})N"
-                   )
+                   tag = f"W({x}{y})N")
 
 def draw_wall_E(x: int, y: int) -> None:
     fltk.rectangle(x + WIDTH_CASE,
@@ -86,8 +78,7 @@ def draw_wall_E(x: int, y: int) -> None:
                    x + WIDTH_CASE - THICKNESS,
                    y + 3 * HEIGHT_CASE / 4,
                    remplissage="Black",
-                   tag = f"W({x}{y})E"
-                   )
+                   tag = f"W({x}{y})E")
 
 def draw_wall_S(x: int, y: int) -> None:
     fltk.rectangle(x + WIDTH_CASE / 4,
@@ -95,8 +86,7 @@ def draw_wall_S(x: int, y: int) -> None:
                    x + 3 * WIDTH_CASE / 4 ,
                    y + HEIGHT_CASE - THICKNESS,
                    remplissage="Black",
-                   tag = f"W({x}{y})S"
-                   )
+                   tag = f"W({x}{y})S")
 
 def draw_wall_W(x: int, y: int) -> None:
     fltk.rectangle(x,
@@ -104,8 +94,7 @@ def draw_wall_W(x: int, y: int) -> None:
                    x + THICKNESS ,
                    y + 3 * HEIGHT_CASE / 4,
                    remplissage="Black",
-                   tag = f"W({x}{y})W"
-                   )
+                   tag = f"W({x}{y})W")
 
 def draw_walls(x: int, y: int, walls: tuple) -> None:
     x = x * WIDTH_CASE
@@ -123,13 +112,13 @@ def erase_walls(x: int, y: int, walls: tuple):
     x = x * WIDTH_CASE
     y = y * HEIGHT_CASE
     for i, elem in enumerate(walls):
-        if elem is False and i == Dir.NORTH:
+        if elem is False and i == struct.Dir.NORTH:
             fltk.efface(f"W({x}{y})N")
-        elif elem is False and i == Dir.EAST:
+        elif elem is False and i == struct.Dir.EAST:
             fltk.efface(f"W({x}{y})E")
-        elif elem is False and i == Dir.SOUTH:
+        elif elem is False and i == struct.Dir.SOUTH:
             fltk.efface(f"W({x}{y})S")
-        elif elem is False and i == Dir.WEST :
+        elif elem is False and i == struct.Dir.WEST :
             fltk.efface(f"W({x}{y})W")
 
 def draw_room(x: int, y: int, r: struct.Room) -> None:

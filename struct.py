@@ -1,5 +1,6 @@
 from functools import total_ordering
 import colorama
+from enum import IntEnum
 
 PIECES = {
     "╨": (True, False, False, False),
@@ -20,6 +21,12 @@ PIECES = {
 }
 
 PIECES_R = {item: key for key, item in PIECES.items()}
+
+class Dir(IntEnum):
+    NORTH = 0
+    EAST = 1
+    SOUTH = 2
+    WEST = 3
 
 class DocumentError(Exception):
     pass
@@ -58,13 +65,19 @@ class Room:
     def rotate(self):
         self.val = (self.val[3], self.val[0], self.val[1], self.val[2])
         self.c = PIECES_R[self.val]
-        # self.c = [k for k, v in PIECES.items() if v == self.val][0]
-        # si definitif passer au reverse dico car 0(1) (act O(n))
+
+    def is_connected(self, other, dir: Dir) -> bool:
+        return ( 
+            (dir == Dir.NORTH and self.val[0] is True and other.val[2] is True) or
+            (dir == Dir.EAST and self.val[1] is True and other.val[3] is True) or
+            (dir == Dir.SOUTH and self.val[2] is True and other.val[0] is True) or
+            (dir == Dir.WEST and self.val[3] is True and other.val[1] is True)
+        )
 
 @total_ordering
 class Entity:
-    def __init__(self, y: int, x: int, level: int = 0) -> None:
-        if level < 0:
+    def __init__(self, y: int, x: int, level: int = 1) -> None:
+        if level < 1:
             raise DragonError("Entity level must be positive")
         self.level = level
         if x < 0 or y < 0:
@@ -91,11 +104,6 @@ class Entity:
     #     return self.level == -1 or self.level >= other.level
 
 class Dragon(Entity):
-    def __init__(self, y: int, x: int, level: int = 0) -> None:
-        if level < 1:
-            raise DragonError("Dragon level must be higher than 1")
-        super().__init__(level, x, y)
-
     def __repr__(self) -> str:
         return f"Dragon: lv{self.level} {self.x, self.y}"
 
@@ -117,3 +125,36 @@ class WallIsYou:
         self.drags = list()
         self.treasure_limit = None
         self.treasure = None
+
+    def is_in_board(self, x1: int, y1: int, x2: int, y2: int) -> bool:
+        return (
+                x1 < 0 or x2 < 0 or 
+                y1 < 0 or y2 < 0 or 
+                x1 > self.width or x2 > self.width or
+                y1 > self.height or y2 > self.height
+            )
+    
+    def is_neighbour(self, x1: int, y1: int, x2: int, y2: int) -> bool:
+        if self.is_in_board(x1, y1, x2, y2) is False:
+            return False
+        diff_x = abs(x1 - x2) 
+        diff_y = abs(y1 - y2)
+        #diff_x + diff_y == 1 to avoid comparing same coord (0,0)(0,0)
+        # or coord in corner (1,1) with (0,0) or (0,2) or (2,0) or (2,2)
+        return diff_x <= 1 and diff_y <= 1 and diff_x + diff_y == 1
+    
+    def dir_neighbour(self, x1: int, y1: int, x2: int, y2: int):
+        if self.is_neighbour(x1, y1, x2, y2) is False:
+            return None
+        diff_x = (x1 - x2) 
+        diff_y = (y1 - y2)
+        if diff_x == 0 and diff_y == -1:
+            return Dir.NORTH
+        if diff_x == 1 and diff_y == 0:
+            return Dir.EAST
+        if diff_x == 0 and diff_y == 1:
+            return Dir.SOUTH
+        if diff_x == -1 and diff_y == 0:
+            return Dir.WEST
+        print("problems")
+        return None
