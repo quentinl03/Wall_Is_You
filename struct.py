@@ -66,12 +66,12 @@ class Room:
         self.val = (self.val[3], self.val[0], self.val[1], self.val[2])
         self.c = PIECES_R[self.val]
 
-    def is_connected(self, other, dir: Dir) -> bool:
+    def is_connected(self, other, d: Dir) -> bool:
         return ( 
-            (dir == Dir.NORTH and self.val[0] is True and other.val[2] is True) or
-            (dir == Dir.EAST and self.val[1] is True and other.val[3] is True) or
-            (dir == Dir.SOUTH and self.val[2] is True and other.val[0] is True) or
-            (dir == Dir.WEST and self.val[3] is True and other.val[1] is True)
+            (d == Dir.NORTH and self.val[0] is True and other.val[2] is True) or
+            (d == Dir.EAST and self.val[1] is True and other.val[3] is True) or
+            (d == Dir.SOUTH and self.val[2] is True and other.val[0] is True) or
+            (d == Dir.WEST and self.val[3] is True and other.val[1] is True)
         )
 
 @total_ordering
@@ -126,12 +126,17 @@ class WallIsYou:
         self.treasure_limit = None
         self.treasure = None
 
-    def is_in_board(self, x1: int, y1: int, x2: int, y2: int) -> bool:
-        return (
-                x1 < 0 or x2 < 0 or 
-                y1 < 0 or y2 < 0 or 
-                x1 > self.width or x2 > self.width or
-                y1 > self.height or y2 > self.height
+    def level_drag(self, x: int, y: int):
+        for elem in self.drags:
+            if x == elem.x and y == elem.y:
+                return elem.level
+        return 0
+
+    def is_in_board(self, x: int, y: int) -> bool:
+        return not(
+                x < 0 or y < 0 or
+                x >= self.width or
+                y >= self.height
             )
     
     def is_neighbour(self, x1: int, y1: int, x2: int, y2: int) -> bool:

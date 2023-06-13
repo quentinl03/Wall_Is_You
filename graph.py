@@ -165,3 +165,21 @@ def draw_game(wis: struct.WallIsYou) -> None:
     draw_drags(wis.drags)
     if wis.treasure:
         draw_treasure(wis.treasure)
+
+def draw_path(lst_solus):
+    start_x = WIDTH_CASE / 2
+    start_y = HEIGHT_CASE / 2
+    for i in range(len(lst_solus) - 1):
+        x1, y1 = lst_solus[i]
+        x2, y2 = lst_solus[i + 1]
+        fltk.ligne(start_x + x1 * WIDTH_CASE,
+                   start_y + y1 * HEIGHT_CASE,
+                   start_x + x2 * WIDTH_CASE,
+                   start_y + y2 * HEIGHT_CASE,
+                   couleur = "red",
+                   epaisseur = 3,
+                   tag = f"C{i}")
+
+def erase_path(lst_solus):
+    for i in range(len(lst_solus) - 1):
+        fltk.efface(f"C{i}")

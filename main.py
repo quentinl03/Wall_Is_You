@@ -1,6 +1,7 @@
 from pprint import pprint
 import sys
 import struct
+import solver
 import fltk
 import graph
 import file
@@ -17,7 +18,13 @@ if __name__ == "__main__":
     file.open_map(game)
     init_graph(game)
     tev = None
+    path = None
     while tev != "Quitte":
+        if path is not None:
+            graph.erase_path(path[0])
+        path = solver.find_path_depth(game, game.adv.x, game.adv.y, set())
+        if path is not None:
+            graph.draw_path(path[0])
         ev = fltk.donne_ev()
         tev = fltk.type_ev(ev)
         if tev == "ClicGauche":
@@ -31,7 +38,7 @@ if __name__ == "__main__":
 
     fltk.ferme_fenetre()
     print("end of exec")
-    pprint(game.board)
-    print(game.adv)
-    print(game.drags)
-    print(game.treasure)
+    # pprint(game.board)
+    # print(game.adv)
+    # print(game.drags)
+    # print(game.treasure)
