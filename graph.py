@@ -1,12 +1,12 @@
 import struct
 import fltk
 
-#100 est la taille des images
-DIVISEUR = 1
-WIDTH_CASE = 100 // DIVISEUR
-HEIGHT_CASE = 100 // DIVISEUR
-THICKNESS = 10 // DIVISEUR
-REDUCE_IMG = .5 / DIVISEUR
+#100 due to image size
+DIVISOR = 1
+WIDTH_CASE = 100 // DIVISOR
+HEIGHT_CASE = 100 // DIVISOR
+THICKNESS = 10 // DIVISOR
+REDUCE_IMG = .5 / DIVISOR
 
 def draw_back(x: int, y: int) -> None:
     fltk.image(x * WIDTH_CASE,
@@ -129,13 +129,21 @@ def draw_room(x: int, y: int, r: struct.Room) -> None:
 def draw_level(x: int, y: int, lv: int):
     start_x = x * WIDTH_CASE + 2 * WIDTH_CASE / 3
     start_y = y * HEIGHT_CASE + 2 * THICKNESS
-    # (lv // 10 + 1) pour gerer les levels a plusieurs chiffres
+
+    tx,ty = fltk.taille_texte(str(lv), taille=12)
+
     fltk.rectangle(start_x, start_y,
-                start_x + THICKNESS * (lv // 10 + 1),
-                start_y + 2 * THICKNESS,
-                remplissage="White")
+                start_x + tx,
+                start_y + ty,
+                remplissage="White",
+                tag = f"LV({x}{y})r")
     fltk.texte(start_x, start_y,
-               str(lv), taille=12)
+               str(lv), taille = 12,
+               tag = f"LV({x}{y})t") 
+
+def erase_level(x: int, y: int) -> None:
+    fltk.efface(f"LV({x}{y})r")
+    fltk.efface(f"LV({x}{y})t")
 
 def draw_entity(x: int, y: int, img: str) -> None:
     fltk.image(x * WIDTH_CASE + WIDTH_CASE / 4,
@@ -143,7 +151,11 @@ def draw_entity(x: int, y: int, img: str) -> None:
                img,
                int(WIDTH_CASE * REDUCE_IMG),
                int(HEIGHT_CASE * REDUCE_IMG),
-               ancrage="nw")
+               ancrage = "nw",
+               tag = f"E({x}{y})")
+    
+def erase_entity(x: int, y: int) -> None:
+    fltk.efface(f"E({x}{y})")
 
 def draw_adv(adv: struct.Adventurer) -> None:
     draw_entity(adv.x, adv.y, "./media/Knight_s_resized.png")
@@ -183,3 +195,22 @@ def draw_path(lst_solus):
 def erase_path(lst_solus):
     for i in range(len(lst_solus) - 1):
         fltk.efface(f"C{i}")
+
+def draw_loose(w_width: int, w_height: int) -> None:
+    fltk.efface_tout()
+    fltk.rectangle(0, 0, w_width, w_height,
+                   remplissage = "black")
+    fltk.image(w_width // 2,
+               w_height // 2,
+               "./media/dead_screen.png")
+
+def draw_victory(w_width: int, w_height: int) -> None:
+    fltk.efface_tout()
+    fltk.rectangle(0, 0, w_width, w_height,
+                   remplissage = "black")
+    fltk.image(w_width // 2,
+               w_height // 2,
+               "./media/victory_screen.png")
+    
+
+    

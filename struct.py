@@ -1,5 +1,5 @@
 from functools import total_ordering
-import colorama
+import colorama as clrm
 from enum import IntEnum
 
 PIECES = {
@@ -50,28 +50,35 @@ class Room:
         self.got_trea = False
         self.c = c
         self.val = None
-        if c in PIECES.keys(): #.keys non obligatoire
+        if c in PIECES.keys(): #.keys not obligatory
             self.val = PIECES[c]
     
     def __repr__(self) -> str:
         if self.got_adv:
-            return f"{colorama.Fore.GREEN}{self.c}{colorama.Style.RESET_ALL}"
+            return f"{clrm.Fore.GREEN}{self.c}{clrm.Style.RESET_ALL}"
         if self.got_drag:
-            return f"{colorama.Fore.RED}{self.c}{colorama.Style.RESET_ALL}"
+            return f"{clrm.Fore.RED}{self.c}{clrm.Style.RESET_ALL}"
         if self.got_trea:
-            return f"{colorama.Fore.YELLOW}{self.c}{colorama.Style.RESET_ALL}"
+            return f"{clrm.Fore.YELLOW}{self.c}{clrm.Style.RESET_ALL}"
         return self.c
     
-    def rotate(self):
+    def rotate(self) -> None:
         self.val = (self.val[3], self.val[0], self.val[1], self.val[2])
         self.c = PIECES_R[self.val]
 
     def is_connected(self, other, d: Dir) -> bool:
-        return ( 
-            (d == Dir.NORTH and self.val[0] is True and other.val[2] is True) or
-            (d == Dir.EAST and self.val[1] is True and other.val[3] is True) or
-            (d == Dir.SOUTH and self.val[2] is True and other.val[0] is True) or
-            (d == Dir.WEST and self.val[3] is True and other.val[1] is True)
+        return (
+            (d == Dir.NORTH and self.val[0]  is True 
+                            and other.val[2] is True) or
+
+            (d == Dir.EAST  and self.val[1]  is True
+                            and other.val[3] is True) or
+
+            (d == Dir.SOUTH and self.val[2]  is True 
+                            and other.val[0] is True) or
+
+            (d == Dir.WEST  and self.val[3]  is True 
+                            and other.val[1] is True)
         )
 
 @total_ordering
@@ -80,28 +87,17 @@ class Entity:
         if level < 1:
             raise DragonError("Entity level must be positive")
         self.level = level
+
         if x < 0 or y < 0:
             raise EntityError("Coordinates must be positive")
         self.x = x
         self.y = y
 
     def __lt__(self,other) -> bool:
-        return self.level != -1 and (self.level < other.level or other.level == -1)
-
-    # def __le__(self,other) -> bool:
-    #     return self.level <= other.level or other.level == -1
+        return self.level < other.level
     
     def __eq__(self, other) -> bool:
         return self.level == other.level
-    
-    # def __ne__(self, other) -> bool:
-    #     return self.level != other.level
-    
-    # def __gt__(self, other) -> bool:
-    #     return other.level != -1 and (self.level > other.level or self.level == -1)
-    
-    # def __ge__(self, other) -> bool:
-    #     return self.level == -1 or self.level >= other.level
 
 class Dragon(Entity):
     def __repr__(self) -> str:
@@ -126,7 +122,7 @@ class WallIsYou:
         self.treasure_limit = None
         self.treasure = None
 
-    def level_drag(self, x: int, y: int):
+    def level_drag(self, x: int, y: int) -> int:
         for elem in self.drags:
             if x == elem.x and y == elem.y:
                 return elem.level
@@ -139,27 +135,35 @@ class WallIsYou:
                 y >= self.height
             )
     
-    def is_neighbour(self, x1: int, y1: int, x2: int, y2: int) -> bool:
-        if self.is_in_board(x1, y1, x2, y2) is False:
-            return False
-        diff_x = abs(x1 - x2) 
-        diff_y = abs(y1 - y2)
-        #diff_x + diff_y == 1 to avoid comparing same coord (0,0)(0,0)
-        # or coord in corner (1,1) with (0,0) or (0,2) or (2,0) or (2,2)
-        return diff_x <= 1 and diff_y <= 1 and diff_x + diff_y == 1
+    def victory(self) -> bool:
+        return len(self.drags) == 0
     
-    def dir_neighbour(self, x1: int, y1: int, x2: int, y2: int):
-        if self.is_neighbour(x1, y1, x2, y2) is False:
-            return None
-        diff_x = (x1 - x2) 
-        diff_y = (y1 - y2)
-        if diff_x == 0 and diff_y == -1:
-            return Dir.NORTH
-        if diff_x == 1 and diff_y == 0:
-            return Dir.EAST
-        if diff_x == 0 and diff_y == 1:
-            return Dir.SOUTH
-        if diff_x == -1 and diff_y == 0:
-            return Dir.WEST
-        print("problems")
-        return None
+    def defeat(self, x: int, y: int) -> bool:
+        lv_drag = self.level_drag(x, y) 
+        if (self.is_in_board(x, y) is False or 
+            self.board[y][x].got_drag is False or 
+            lv_drag == 0):
+            return False
+        
+        return self.adv.level < lv_drag
+    
+    def play(self, dest_x: int, dest_y: int):
+        """
+        You have to check loose before
+        """
+        if (self.is_in_board(dest_x, dest_y) is False or
+            self.level_drag(dest_x, dest_y) == 0):
+            return
+
+        self.board[self.adv.y][self.adv.x].got_adv = False
+
+        self.board[dest_y][dest_x].got_adv = True
+        self.board[dest_y][dest_x].got_drag = False
+        self.board[dest_y][dest_x].got_trea = False
+        self.adv.x = dest_x
+        self.adv.y = dest_y
+        self.adv.level += 1
+
+        for elem in self.drags:
+            if elem.x == dest_x and elem.y == dest_y:
+                self.drags.remove(elem)
