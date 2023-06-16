@@ -1,6 +1,6 @@
 from pprint import pprint
 import sys
-import struct
+import structure as struct
 import solver
 import fltk
 import graph
@@ -10,6 +10,7 @@ import file
 def init_graph(wis: struct.WallIsYou) -> None:
     fltk.cree_fenetre(wis.width * graph.WIDTH_CASE, wis.height * graph.HEIGHT_CASE)
     graph.draw_game(wis)
+
 
 if __name__ == "__main__":
     victory = False
@@ -24,10 +25,9 @@ if __name__ == "__main__":
     while tev != "Quitte":
         if path is not None:
             graph.erase_path(path)
-        path = solver.find_path_depth(game, game.adv.x, game.adv.y, set())
+        path = solver.find_path(game)
         if path is not None:
-            graph.draw_path(path[0])
-            path = path[0]
+            graph.draw_path(path)
         ev = fltk.donne_ev()
         tev = fltk.type_ev(ev)
         if tev == "ClicGauche":
@@ -36,8 +36,9 @@ if __name__ == "__main__":
             graph.erase_walls(x, y, game.board[y][x].val)
             game.board[y][x].rotate()
             graph.draw_walls(x, y, game.board[y][x].val)
+
         if tev == "Touche" and fltk.touche(ev) == "space" and path is not None:
-            dest_x, dest_y = path[0]
+            dest_x, dest_y = path[-1]
             if game.defeat(dest_x, dest_y) is True:
                 break
             game.play(dest_x, dest_y)
@@ -49,10 +50,9 @@ if __name__ == "__main__":
                 break
         fltk.mise_a_jour()
 
-    if victory is True :
-        graph.draw_victory(game.width * graph.WIDTH_CASE, game.height * graph.HEIGHT_CASE)
-    else :
-        graph.draw_loose(game.width * graph.WIDTH_CASE, game.height * graph.HEIGHT_CASE)
+    fin = graph.draw_victory if victory else graph.draw_loose
+    fin(game.width * graph.WIDTH_CASE, game.height * graph.HEIGHT_CASE)
+    
     fltk.mise_a_jour()
     fltk.attend_fermeture()
     pprint(game.board)

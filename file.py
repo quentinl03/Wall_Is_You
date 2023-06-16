@@ -1,20 +1,21 @@
-import struct
+import structure as struct
 
-def open_map(wis : struct.WallIsYou) -> None:
-    with open(wis.file , "r", encoding="utf-8") as m:
+
+def open_map(wis: struct.WallIsYou) -> None:
+    with open(wis.file, "r", encoding="utf-8") as m:
         for acc_lines, line in enumerate(m):
 
             # We're in a line of the maze
             if line[0] in struct.PIECES:
                 wis.board.append(list())
                 for carac in line:
-                    if carac == '\n': # end of line, do nothing
+                    if carac == '\n':  # end of line, do nothing
                         continue
 
                     room = struct.Room(carac)
                     if room.val is not None:
                         wis.board[acc_lines].append(room)
-                    else :
+                    else:
                         raise struct.DocumentError(
                             f"A character is invalid in the {acc_lines + 1}th line"
                         )
@@ -28,10 +29,10 @@ def open_map(wis : struct.WallIsYou) -> None:
                 # Read line
                 try:
                     t_adv = tuple(map(int, line[1:].split()))
-                    if len(t_adv) == 2: #no level for the adv (1st load)
+                    if len(t_adv) == 2:  # no level for the adv (1st load)
                         y, x = t_adv
                         wis.adv = struct.Adventurer(y, x)
-                    else: #level for the adv (save)
+                    else:  # level for the adv (save)
                         y, x, lv = t_adv
                         wis.adv = struct.Adventurer(y, x, lv)
                     wis.board[y][x].got_adv = True
@@ -42,7 +43,7 @@ def open_map(wis : struct.WallIsYou) -> None:
                     )
                 # If the room is already occupated
                 if (wis.board[y][x].got_drag is True or
-                    wis.board[y][x].got_trea is True):
+                        wis.board[y][x].got_trea is True):
                     raise struct.AdventurerError(
                         "The adventurer is in a room already occupated"
                     )
@@ -66,7 +67,7 @@ def open_map(wis : struct.WallIsYou) -> None:
                     )
                 # If the room is already occupated
                 if (wis.board[y][x].got_adv is True or
-                    wis.board[y][x].got_trea is True):
+                        wis.board[y][x].got_trea is True):
                     raise struct.DragonError(
                         "The dragon is in a room already occupated"
                     )
