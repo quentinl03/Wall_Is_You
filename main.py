@@ -26,7 +26,10 @@ if __name__ == "__main__":
         if path is not None:
             graph.erase_path(path)
         path = solver.find_path(game)
+        # path = solver.find_path_depth(game, game.adv.x, game.adv.y, set())
         if path is not None:
+            # path[0].reverse()
+            # path = path[0]
             graph.draw_path(path)
         ev = fltk.donne_ev()
         tev = fltk.type_ev(ev)
@@ -39,20 +42,20 @@ if __name__ == "__main__":
 
         if tev == "Touche" and fltk.touche(ev) == "space" and path is not None:
             dest_x, dest_y = path[-1]
-            if game.defeat(dest_x, dest_y) is True:
+            if game.defeat(dest_x, dest_y):
                 break
             game.play(dest_x, dest_y)
             fltk.efface_tout()
             graph.draw_game(game)
 
-            if game.victory() is True:
-                victory = True
+            victory = game.victory()
+            if victory:
                 break
         fltk.mise_a_jour()
 
     fin = graph.draw_victory if victory else graph.draw_loose
     fin(game.width * graph.WIDTH_CASE, game.height * graph.HEIGHT_CASE)
-    
+
     fltk.mise_a_jour()
     fltk.attend_fermeture()
     pprint(game.board)

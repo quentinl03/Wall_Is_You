@@ -7,7 +7,7 @@ def find_path_depth(wis: struct.WallIsYou, x: int, y: int, path: set
                     ) -> Optional[tuple[list[tuple[int, int]], int]]:
 
     # return dragon coordinates and his level
-    if wis.board[y][x].got_drag is True:
+    if wis.board[y][x].got_drag:
         lv = wis.level_drag(x, y)
         if lv == 0:
             raise (ValueError("Dragon not found but should have been"))
@@ -22,21 +22,11 @@ def find_path_depth(wis: struct.WallIsYou, x: int, y: int, path: set
 
     # Testing if 4 rooms next to us are connected
     lst_res = [None, None, None, None]
-    if wis.is_in_board(x, y - 1):
-        if r.is_connected(wis.board[y - 1][x], struct.Dir.NORTH):
-            lst_res[0] = find_path_depth(wis, x, y - 1, path)
-
-    if wis.is_in_board(x + 1, y):
-        if r.is_connected(wis.board[y][x + 1], struct.Dir.EAST):
-            lst_res[1] = find_path_depth(wis, x + 1, y, path)
-
-    if wis.is_in_board(x, y + 1):
-        if r.is_connected(wis.board[y + 1][x], struct.Dir.SOUTH):
-            lst_res[2] = find_path_depth(wis, x, y + 1, path)
-
-    if wis.is_in_board(x - 1, y):
-        if r.is_connected(wis.board[y][x - 1], struct.Dir.WEST):
-            lst_res[3] = find_path_depth(wis, x - 1, y, path)
+    dirs = [(x, y - 1, struct.Dir.NORTH), (x + 1, y, struct.Dir.EAST),
+            (x, y + 1, struct.Dir.SOUTH), (x - 1, y, struct.Dir.WEST)]
+    for i, (nx, ny, dir) in enumerate(dirs):
+        if wis.is_in_board(nx, ny) and r.is_connected(wis.board[ny][nx], dir):
+            lst_res[i] = find_path_depth(wis, nx, ny, path)
 
     # get the maximum value
     maxi = 0
@@ -50,7 +40,7 @@ def find_path_depth(wis: struct.WallIsYou, x: int, y: int, path: set
     return maxi_e + [(x, y)], maxi
 
 
-def find_path_breadth(wis: struct.WallIsYou, dest_x, dest_y) -> list[tuple[int, int]]:
+def find_path_breadth(wis: struct.WallIsYou, dest_x, dest_y) -> Optional[list[tuple[int, int]]]:
     closed = set()
 
     to_do = deque()
@@ -60,14 +50,15 @@ def find_path_breadth(wis: struct.WallIsYou, dest_x, dest_y) -> list[tuple[int, 
         (x, y), path = to_do.popleft()
         if x == dest_x and y == dest_y:
             return path
-        
+
         r = wis.board[y][x]
 
-
-        dirs = [(x, y - 1, struct.Dir.NORTH), (x + 1, y, struct.Dir.EAST), (x, y + 1, struct.Dir.SOUTH), (x - 1, y, struct.Dir.WEST)]
+        dirs = [(x, y - 1, struct.Dir.NORTH), (x + 1, y, struct.Dir.EAST),
+                (x, y + 1, struct.Dir.SOUTH), (x - 1, y, struct.Dir.WEST)]
         for nx, ny, dir in dirs:
+            if (wis.is_in_board(nx, ny) and (nx, ny) not in closed and
+               r.is_connected(wis.board[ny][nx], dir)):
 
-            if wis.is_in_board(nx, ny) and r.is_connected(wis.board[ny][nx], dir) and (nx, ny) not in closed:
                 if not wis.board[ny][nx].got_drag or nx == dest_x and ny == dest_y:
                     to_do.append(((nx, ny), path + [(nx, ny)]))
 
@@ -76,12 +67,12 @@ def find_path_breadth(wis: struct.WallIsYou, dest_x, dest_y) -> list[tuple[int, 
     return
 
 
-def find_path(wis):
+def find_path(wis: struct.WallIsYou) -> Optional[list[tuple[int, int]]]:
     if wis.treasure is not None:
         solv = find_path_breadth(wis, wis.trea.x, wis.trea.y)
         if solv is not None:
             return solv
-    
+
     drags = sorted(wis.drags, reverse=True)
     for elem in drags:
         solv = find_path_breadth(wis, elem.x, elem.y)

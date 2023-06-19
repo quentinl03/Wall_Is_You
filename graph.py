@@ -115,21 +115,21 @@ def draw_walls(x: int, y: int, walls: tuple) -> None:
              draw_wall_S,
              draw_wall_W]
     for i, elem in enumerate(walls):
-        if elem is False:
+        if not elem:
             tab_f[i](x, y)
 
 
-def erase_walls(x: int, y: int, walls: tuple):
+def erase_walls(x: int, y: int, walls: tuple) -> None:
     x = x * WIDTH_CASE
     y = y * HEIGHT_CASE
     for i, elem in enumerate(walls):
-        if elem is False and i == struct.Dir.NORTH:
+        if not elem and i == struct.Dir.NORTH:
             fltk.efface(f"W({x}{y})N")
-        elif elem is False and i == struct.Dir.EAST:
+        elif not elem and i == struct.Dir.EAST:
             fltk.efface(f"W({x}{y})E")
-        elif elem is False and i == struct.Dir.SOUTH:
+        elif not elem and i == struct.Dir.SOUTH:
             fltk.efface(f"W({x}{y})S")
-        elif elem is False and i == struct.Dir.WEST:
+        elif not elem and i == struct.Dir.WEST:
             fltk.efface(f"W({x}{y})W")
 
 
@@ -139,7 +139,7 @@ def draw_room(x: int, y: int, r: struct.Room) -> None:
     draw_walls(x, y, r.val)
 
 
-def draw_level(x: int, y: int, lv: int):
+def draw_level(x: int, y: int, lv: int) -> None:
     start_x = x * WIDTH_CASE + 2 * WIDTH_CASE / 3
     start_y = y * HEIGHT_CASE + 2 * THICKNESS
 
@@ -199,7 +199,7 @@ def draw_game(wis: struct.WallIsYou) -> None:
         draw_treasure(wis.treasure)
 
 
-def draw_path(lst_solus):
+def draw_path(lst_solus: list[tuple[int, int]]) -> None:
     start_x = WIDTH_CASE / 2
     start_y = HEIGHT_CASE / 2
     for i in range(len(lst_solus) - 1):
@@ -214,8 +214,7 @@ def draw_path(lst_solus):
                    tag=f"P{i}")
 
 
-def erase_path(lst_solus):
-    
+def erase_path(lst_solus: list[tuple[int, int]]) -> None:
     for i in range(len(lst_solus) - 1):
         fltk.efface(f"P{i}")
 

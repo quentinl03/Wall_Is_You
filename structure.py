@@ -75,17 +75,13 @@ class Room:
 
     def is_connected(self, other, d: Dir) -> bool:
         return (
-            (d == Dir.NORTH and self.val[0] is True
-             and other.val[2] is True) or
+            (d == Dir.NORTH and self.val[0] and other.val[2]) or
 
-            (d == Dir.EAST and self.val[1] is True
-             and other.val[3] is True) or
+            (d == Dir.EAST and self.val[1] and other.val[3]) or
 
-            (d == Dir.SOUTH and self.val[2] is True
-             and other.val[0] is True) or
+            (d == Dir.SOUTH and self.val[2] and other.val[0]) or
 
-            (d == Dir.WEST and self.val[3] is True
-             and other.val[1] is True)
+            (d == Dir.WEST and self.val[3] and other.val[1])
         )
 
 
@@ -151,17 +147,17 @@ class WallIsYou:
 
     def defeat(self, x: int, y: int) -> bool:
         lv_drag = self.level_drag(x, y)
-        if (self.is_in_board(x, y) is False or
-            self.board[y][x].got_drag is False or
+        if (not self.is_in_board(x, y) or
+            not self.board[y][x].got_drag or
                 lv_drag == 0):
             return False
         return self.adv.level < lv_drag
 
-    def play(self, dest_x: int, dest_y: int):
+    def play(self, dest_x: int, dest_y: int) -> None:
         """
         You have to check loose before
         """
-        if (self.is_in_board(dest_x, dest_y) is False or
+        if (not self.is_in_board(dest_x, dest_y) or
                 self.level_drag(dest_x, dest_y) == 0):
             return
 
