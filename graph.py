@@ -10,15 +10,32 @@ REDUCE_IMG = .5 / DIVISOR
 
 
 def draw_back(x: int, y: int) -> None:
+    """Draws brackgroud of a room.
+        Takes the top-left coordinates of the room.
+
+        You must have the `media` subfolder with the `background.png` file.
+
+    Args:
+        x (int): Initial position (width)  
+        y (int): Initial position (height)
+    """
     fltk.image(x * WIDTH_CASE,
                y * HEIGHT_CASE,
-               "./media/fond.png",
+               "./media/background.png",
                largeur=WIDTH_CASE,
                hauteur=HEIGHT_CASE,
                ancrage="nw")
 
 
 def draw_corner_NW(x: int, y: int) -> None:
+    """Draws the top-left corner of the room.
+    
+    Use instead the function that draws all 4 corners at once `draw_corners`.
+
+    Args:
+        x (int): Initial position (width)  
+        y (int): Initial position (height)
+    """
     fltk.rectangle(x, y,
                    x + WIDTH_CASE / 4,
                    y + THICKNESS,
@@ -30,6 +47,14 @@ def draw_corner_NW(x: int, y: int) -> None:
 
 
 def draw_corner_NE(x: int, y: int) -> None:
+    """Draws the top-right corner of the room.
+    
+    Use instead the function that draws all 4 corners at once `draw_corners`.
+
+    Args:
+        x (int): Initial position (width)  
+        y (int): Initial position (height)
+    """
     fltk.rectangle(x, y,
                    x - WIDTH_CASE / 4,
                    y + THICKNESS,
@@ -41,6 +66,14 @@ def draw_corner_NE(x: int, y: int) -> None:
 
 
 def draw_corner_SE(x: int, y: int) -> None:
+    """Draws the bottom-right corner of the room.
+    
+    Use instead the function that draws all 4 corners at once `draw_corners`.
+
+    Args:
+        x (int): Initial position (width)  
+        y (int): Initial position (height)
+    """
     fltk.rectangle(x, y,
                    x - WIDTH_CASE / 4,
                    y - THICKNESS,
@@ -52,6 +85,14 @@ def draw_corner_SE(x: int, y: int) -> None:
 
 
 def draw_corner_SW(x: int, y: int) -> None:
+    """Draws the bottom-left corner of the room.
+    
+    Use instead the function that draws all 4 corners at once `draw_corners`.
+
+    Args:
+        x (int): Initial position (width)  
+        y (int): Initial position (height)
+    """
     fltk.rectangle(x, y,
                    x + WIDTH_CASE / 4,
                    y - THICKNESS,
@@ -63,6 +104,13 @@ def draw_corner_SW(x: int, y: int) -> None:
 
 
 def draw_corners(x: int, y: int) -> None:
+    """Draws the 4 corners of the room.
+        Takes the top-left coordinates of the room.
+
+    Args:
+        x (int): Initial position (width)  
+        y (int): Initial position (height)
+    """
     x = x * WIDTH_CASE
     y = y * HEIGHT_CASE
     draw_corner_NW(x, y)
@@ -72,6 +120,14 @@ def draw_corners(x: int, y: int) -> None:
 
 
 def draw_wall_N(x: int, y: int) -> None:
+    """Draws the top wall of the room.
+    
+    Use instead the function that draws walls with conditions `draw_walls`.
+
+    Args:
+        x (int): Initial position (width)  
+        y (int): Initial position (height)
+    """
     fltk.rectangle(x + WIDTH_CASE / 4,
                    y,
                    x + 3 * WIDTH_CASE / 4,
@@ -81,6 +137,14 @@ def draw_wall_N(x: int, y: int) -> None:
 
 
 def draw_wall_E(x: int, y: int) -> None:
+    """Draws the right wall of the room.
+    
+    Use instead the function that draws walls with conditions `draw_walls`.
+
+    Args:
+        x (int): Initial position (width)  
+        y (int): Initial position (height)
+    """
     fltk.rectangle(x + WIDTH_CASE,
                    y + HEIGHT_CASE / 4,
                    x + WIDTH_CASE - THICKNESS,
@@ -90,6 +154,14 @@ def draw_wall_E(x: int, y: int) -> None:
 
 
 def draw_wall_S(x: int, y: int) -> None:
+    """Draws the bottom wall of the room.
+    
+    Use instead the function that draws walls with conditions `draw_walls`.
+
+    Args:
+        x (int): Initial position (width)  
+        y (int): Initial position (height)
+    """
     fltk.rectangle(x + WIDTH_CASE / 4,
                    y + HEIGHT_CASE,
                    x + 3 * WIDTH_CASE / 4,
@@ -99,6 +171,14 @@ def draw_wall_S(x: int, y: int) -> None:
 
 
 def draw_wall_W(x: int, y: int) -> None:
+    """Draws the left wall of the room.
+    
+    Use instead the function that draws walls with conditions `draw_walls`.
+
+    Args:
+        x (int): Initial position (width)  
+        y (int): Initial position (height)
+    """
     fltk.rectangle(x,
                    y + HEIGHT_CASE / 4,
                    x + THICKNESS,
@@ -107,7 +187,18 @@ def draw_wall_W(x: int, y: int) -> None:
                    tag=f"W({x}{y})W")
 
 
-def draw_walls(x: int, y: int, walls: tuple) -> None:
+def draw_walls(x: int, y: int, walls: tuple[bool, bool, bool, bool]) -> None:
+    """Draw the walls of the room from the arg walls,
+    that tell you which parts to draw.
+
+    Takes the top-left coordinates of the room.
+
+    Args:
+        x (int): Initial position (width)  
+        y (int): Initial position (height)
+        walls (tuple[bool, bool, bool, bool]): (Top, Right, Bottom, Left)
+            False if the room is closed to this direction
+    """
     x = x * WIDTH_CASE
     y = y * HEIGHT_CASE
     tab_f = [draw_wall_N,
@@ -120,6 +211,17 @@ def draw_walls(x: int, y: int, walls: tuple) -> None:
 
 
 def erase_walls(x: int, y: int, walls: tuple) -> None:
+    """Erase the walls of the room from the arg walls,
+    that tell you which parts to erase.
+
+    Takes the top-left coordinates of the room.
+
+    Args:
+        x (int): Initial position (width)
+        y (int): Initial position (height)
+        walls (tuple[bool, bool, bool, bool]): (Top, Right, Bottom, Left)
+            False if the room is closed to this direction
+    """
     x = x * WIDTH_CASE
     y = y * HEIGHT_CASE
     for i, elem in enumerate(walls):
@@ -134,12 +236,29 @@ def erase_walls(x: int, y: int, walls: tuple) -> None:
 
 
 def draw_room(x: int, y: int, r: struct.Room) -> None:
+    """Draw the entire room (background, walls, corners).
+    
+    Args:
+        x (int): Initial position (width)
+        y (int): Initial position (height)
+        r (struct.Room): Got information about which wall is open
+    """
     draw_back(x, y)
     draw_corners(x, y)
     draw_walls(x, y, r.val)
 
 
 def draw_level(x: int, y: int, lv: int) -> None:
+    """Draws the level of the entity at the top right
+    of the room.
+
+    Takes the top-left coordinates of the room.
+
+    Args:
+        x (int): Initial position of the room(width)
+        y (int): Initial position of the room(height)
+        lv (int): Level to draw
+    """
     start_x = x * WIDTH_CASE + 2 * WIDTH_CASE / 3
     start_y = y * HEIGHT_CASE + 2 * THICKNESS
 
@@ -156,11 +275,29 @@ def draw_level(x: int, y: int, lv: int) -> None:
 
 
 def erase_level(x: int, y: int) -> None:
+    """Erase the level of the entity at the top right
+    of the room.
+
+    Takes the top-left coordinates of the room.
+
+    Args:
+        x (int): Initial position of the room(width)
+        y (int): Initial position of the room(height)
+    """
     fltk.efface(f"LV({x}{y})r")
     fltk.efface(f"LV({x}{y})t")
 
 
 def draw_entity(x: int, y: int, img: str) -> None:
+    """Draws the entity in the middle of the room.
+
+    Takes the top-left coordinates of the room.
+
+    Args:
+        x (int): Initial position (width)
+        y (int): Initial position (height)
+        img (str): Path to the image
+    """
     fltk.image(x * WIDTH_CASE + WIDTH_CASE / 4,
                y * HEIGHT_CASE + HEIGHT_CASE / 4,
                img,
@@ -171,25 +308,52 @@ def draw_entity(x: int, y: int, img: str) -> None:
 
 
 def erase_entity(x: int, y: int) -> None:
+    """Erase the entity in the middle of the room.
+
+    Takes the top-left coordinates of the room.
+    Args:
+        x (int): Initial position (width)
+        y (int): Initial position (height)
+    """
     fltk.efface(f"E({x}{y})")
 
 
 def draw_adv(adv: struct.Adventurer) -> None:
-    draw_entity(adv.x, adv.y, "./media/Knight_s_resized.png")
+    """Draws the adventurer.
+
+    Args:
+        adv (struct.Adventurer): Adventurer to draw
+    """
+    draw_entity(adv.x, adv.y, "./media/Knight.png")
     draw_level(adv.x, adv.y, adv.level)
 
 
 def draw_drags(lst_drags: list[struct.Dragon]) -> None:
+    """Draws all dragons.
+
+    Args:
+        lst_drags (list[struct.Dragon]): List of dragons to draw
+    """
     for elem in lst_drags:
-        draw_entity(elem.x, elem.y, "./media/Dragon_s.png")
+        draw_entity(elem.x, elem.y, "./media/Dragon.png")
         draw_level(elem.x, elem.y, elem.level)
 
 
 def draw_treasure(trea: struct.Treasure) -> None:
-    draw_entity(trea.x, trea.y, "./media/treasure_resized.png")
+    """Draws the treasure.
+
+    Args:
+        trea (struct.Treasure): Treasure to draw
+    """
+    draw_entity(trea.x, trea.y, "./media/treasure.png")
 
 
 def draw_game(wis: struct.WallIsYou) -> None:
+    """Draw all the game from the board to entities
+
+    Args:
+        wis (struct.WallIsYou): Class of the game to draw
+    """
     for y in range(wis.height):
         for x in range(wis.width):
             draw_room(x, y, wis.board[y][x])
@@ -200,6 +364,11 @@ def draw_game(wis: struct.WallIsYou) -> None:
 
 
 def draw_path(lst_solus: list[tuple[int, int]]) -> None:
+    """Draws the path of the adventurer to a dragon or a treasure.
+
+    Args:
+        lst_solus (list[tuple[int, int]]): Path use by the adventurer
+    """
     start_x = WIDTH_CASE / 2
     start_y = HEIGHT_CASE / 2
     for i in range(len(lst_solus) - 1):
@@ -215,11 +384,22 @@ def draw_path(lst_solus: list[tuple[int, int]]) -> None:
 
 
 def erase_path(lst_solus: list[tuple[int, int]]) -> None:
+    """Erase the path of the adventurer.
+
+    Args:
+        lst_solus (list[tuple[int, int]]): Path use by the adventurer
+    """
     for i in range(len(lst_solus) - 1):
         fltk.efface(f"P{i}")
 
 
 def draw_loose(w_width: int, w_height: int) -> None:
+    """Erase the game and draw the defeat screen.
+
+    Args:
+        w_width (int): window widht
+        w_height (int): window height
+    """
     fltk.efface_tout()
     fltk.rectangle(0, 0, w_width, w_height,
                    remplissage="black")
@@ -229,6 +409,12 @@ def draw_loose(w_width: int, w_height: int) -> None:
 
 
 def draw_victory(w_width: int, w_height: int) -> None:
+    """Erase the game and draw the victory screen.
+
+    Args:
+        w_width (int): window widht
+        w_height (int): window height
+    """
     fltk.efface_tout()
     fltk.rectangle(0, 0, w_width, w_height,
                    remplissage="black")
