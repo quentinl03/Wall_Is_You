@@ -127,7 +127,6 @@ class WallIsYou:
         self.board = list()
         self.adv = None
         self.drags = list()
-        self.treasure_limit = None
         self.treasure = None
 
     def level_drag(self, x: int, y: int) -> int:
@@ -158,7 +157,9 @@ class WallIsYou:
         You have to check loose before
         """
         if (not self.is_in_board(dest_x, dest_y) or
-                self.level_drag(dest_x, dest_y) == 0):
+                (not self.board[dest_y][dest_x].got_drag and
+                not self.board[dest_y][dest_x].got_trea)
+            ):
             return
 
         self.board[self.adv.y][self.adv.x].got_adv = False
@@ -168,8 +169,10 @@ class WallIsYou:
         self.board[dest_y][dest_x].got_trea = False
         self.adv.x = dest_x
         self.adv.y = dest_y
-        self.adv.level += 1
 
         for elem in self.drags:
             if elem.x == dest_x and elem.y == dest_y:
                 self.drags.remove(elem)
+                self.adv.level += 1
+        if self.treasure and self.treasure.x == dest_x and self.treasure.y == dest_y:
+            self.treasure = None

@@ -4,14 +4,14 @@ import structure as struct
 def open_map(wiy: struct.WallIsYou) -> None:
     """Read the map in wiy.file,
     which tell you the path to the file to read.
-    
+
 
     Args:
         wiy (struct.WallIsYou): game to read
 
     Raises:
         struct.DocumentError: When the first charater of a line is not valid,
-        other functions will check inline issues. 
+        other functions will check inline issues.
     """
     with open(wiy.file, "r", encoding="utf-8") as m:
         for acc_lines, line in enumerate(m):

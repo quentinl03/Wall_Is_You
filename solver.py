@@ -107,7 +107,7 @@ def find_path(wis: struct.WallIsYou) -> Optional[list[tuple[int, int]]]:
         Optional[list[tuple[int, int]]]: The path if there is one.
     """
     if wis.treasure is not None:
-        solv = find_path_breadth(wis, wis.trea.x, wis.trea.y)
+        solv = find_path_breadth(wis, wis.treasure.x, wis.treasure.y)
         if solv is not None:
             return solv
 

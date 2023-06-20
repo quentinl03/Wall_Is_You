@@ -20,9 +20,12 @@ if __name__ == "__main__":
     game = struct.WallIsYou(sys.argv[1])
     file.open_map(game)
     init_graph(game)
-    tev = None
+
     path = None
-    while tev != "Quitte":
+    while ev := fltk.attend_ev():
+        tev = fltk.type_ev(ev)
+        if tev == "Quitte":
+            break
         if path is not None:
             graph.erase_path(path)
         path = solver.find_path(game)
@@ -31,16 +34,24 @@ if __name__ == "__main__":
             # path[0].reverse()
             # path = path[0]
             graph.draw_path(path)
-        ev = fltk.donne_ev()
-        tev = fltk.type_ev(ev)
-        if tev == "ClicGauche":
+        if tev == "ClicGauche" or tev == "ClicDroit":
             x = fltk.abscisse_souris() // (graph.WIDTH_CASE // graph.DIVISOR)
             y = fltk.ordonnee_souris() // (graph.HEIGHT_CASE // graph.DIVISOR)
-            graph.erase_walls(x, y, game.board[y][x].val)
-            game.board[y][x].rotate()
-            graph.draw_walls(x, y, game.board[y][x].val)
-
-        if tev == "Touche" and fltk.touche(ev) == "space" and path is not None:
+            if tev == "ClicGauche":
+                graph.erase_walls(x, y, game.board[y][x].val)
+                game.board[y][x].rotate()
+                graph.draw_walls(x, y, game.board[y][x].val)
+            elif (tev == "ClicDroit" and 
+                not game.board[y][x].got_drag and not game.board[y][x].got_adv):
+                if game.board[y][x].got_trea is True :
+                    game.treasure = None
+                    game.board[y][x].got_trea = False
+                    graph.erase_entity(x, y)
+                else:
+                    game.treasure = struct.Treasure(y, x)
+                    game.board[y][x].got_trea = True
+                    graph.draw_treasure(game.treasure)
+        elif tev == "Touche" and fltk.touche(ev) == "space" and path is not None:
             dest_x, dest_y = path[-1]
             if game.defeat(dest_x, dest_y):
                 break
@@ -51,13 +62,23 @@ if __name__ == "__main__":
             victory = game.victory()
             if victory:
                 break
+
+        if path is not None:
+            graph.erase_path(path)
+        path = solver.find_path(game)
+        # path = solver.find_path_depth(game, game.adv.x, game.adv.y, set())
+        if path is not None:
+            graph.draw_path(path)
         fltk.mise_a_jour()
+
+        pprint(game.board)
+        print(ev, tev, path)
 
     fin = graph.draw_victory if victory else graph.draw_loose
     fin(game.width * graph.WIDTH_CASE, game.height * graph.HEIGHT_CASE)
-
-    fltk.mise_a_jour()
-    fltk.attend_fermeture()
+    if tev != "Quitte":
+        fltk.mise_a_jour()
+        fltk.attend_fermeture()
     pprint(game.board)
     print(game.adv)
     print(game.drags)

@@ -16,7 +16,7 @@ def draw_back(x: int, y: int) -> None:
         You must have the `media` subfolder with the `background.png` file.
 
     Args:
-        x (int): Initial position (width)  
+        x (int): Initial position (width)
         y (int): Initial position (height)
     """
     fltk.image(x * WIDTH_CASE,
@@ -29,11 +29,11 @@ def draw_back(x: int, y: int) -> None:
 
 def draw_corner_NW(x: int, y: int) -> None:
     """Draws the top-left corner of the room.
-    
+
     Use instead the function that draws all 4 corners at once `draw_corners`.
 
     Args:
-        x (int): Initial position (width)  
+        x (int): Initial position (width)
         y (int): Initial position (height)
     """
     fltk.rectangle(x, y,
@@ -48,11 +48,11 @@ def draw_corner_NW(x: int, y: int) -> None:
 
 def draw_corner_NE(x: int, y: int) -> None:
     """Draws the top-right corner of the room.
-    
+
     Use instead the function that draws all 4 corners at once `draw_corners`.
 
     Args:
-        x (int): Initial position (width)  
+        x (int): Initial position (width)
         y (int): Initial position (height)
     """
     fltk.rectangle(x, y,
@@ -67,11 +67,11 @@ def draw_corner_NE(x: int, y: int) -> None:
 
 def draw_corner_SE(x: int, y: int) -> None:
     """Draws the bottom-right corner of the room.
-    
+
     Use instead the function that draws all 4 corners at once `draw_corners`.
 
     Args:
-        x (int): Initial position (width)  
+        x (int): Initial position (width)
         y (int): Initial position (height)
     """
     fltk.rectangle(x, y,
@@ -86,11 +86,11 @@ def draw_corner_SE(x: int, y: int) -> None:
 
 def draw_corner_SW(x: int, y: int) -> None:
     """Draws the bottom-left corner of the room.
-    
+
     Use instead the function that draws all 4 corners at once `draw_corners`.
 
     Args:
-        x (int): Initial position (width)  
+        x (int): Initial position (width)
         y (int): Initial position (height)
     """
     fltk.rectangle(x, y,
