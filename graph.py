@@ -108,7 +108,7 @@ def draw_corners(x: int, y: int) -> None:
         Takes the top-left coordinates of the room.
 
     Args:
-        x (int): Initial position (width)  
+        x (int): Initial position (width)
         y (int): Initial position (height)
     """
     x = x * WIDTH_CASE
@@ -121,11 +121,11 @@ def draw_corners(x: int, y: int) -> None:
 
 def draw_wall_N(x: int, y: int) -> None:
     """Draws the top wall of the room.
-    
+
     Use instead the function that draws walls with conditions `draw_walls`.
 
     Args:
-        x (int): Initial position (width)  
+        x (int): Initial position (width)
         y (int): Initial position (height)
     """
     fltk.rectangle(x + WIDTH_CASE / 4,
@@ -138,11 +138,11 @@ def draw_wall_N(x: int, y: int) -> None:
 
 def draw_wall_E(x: int, y: int) -> None:
     """Draws the right wall of the room.
-    
+
     Use instead the function that draws walls with conditions `draw_walls`.
 
     Args:
-        x (int): Initial position (width)  
+        x (int): Initial position (width)
         y (int): Initial position (height)
     """
     fltk.rectangle(x + WIDTH_CASE,
@@ -155,11 +155,11 @@ def draw_wall_E(x: int, y: int) -> None:
 
 def draw_wall_S(x: int, y: int) -> None:
     """Draws the bottom wall of the room.
-    
+
     Use instead the function that draws walls with conditions `draw_walls`.
 
     Args:
-        x (int): Initial position (width)  
+        x (int): Initial position (width)
         y (int): Initial position (height)
     """
     fltk.rectangle(x + WIDTH_CASE / 4,
@@ -172,11 +172,11 @@ def draw_wall_S(x: int, y: int) -> None:
 
 def draw_wall_W(x: int, y: int) -> None:
     """Draws the left wall of the room.
-    
+
     Use instead the function that draws walls with conditions `draw_walls`.
 
     Args:
-        x (int): Initial position (width)  
+        x (int): Initial position (width)
         y (int): Initial position (height)
     """
     fltk.rectangle(x,
@@ -194,7 +194,7 @@ def draw_walls(x: int, y: int, walls: tuple[bool, bool, bool, bool]) -> None:
     Takes the top-left coordinates of the room.
 
     Args:
-        x (int): Initial position (width)  
+        x (int): Initial position (width)
         y (int): Initial position (height)
         walls (tuple[bool, bool, bool, bool]): (Top, Right, Bottom, Left)
             False if the room is closed to this direction
@@ -237,7 +237,7 @@ def erase_walls(x: int, y: int, walls: tuple) -> None:
 
 def draw_room(x: int, y: int, r: struct.Room) -> None:
     """Draw the entire room (background, walls, corners).
-    
+
     Args:
         x (int): Initial position (width)
         y (int): Initial position (height)

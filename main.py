@@ -41,13 +41,13 @@ if __name__ == "__main__":
                 graph.erase_walls(x, y, game.board[y][x].val)
                 game.board[y][x].rotate()
                 graph.draw_walls(x, y, game.board[y][x].val)
-            elif (tev == "ClicDroit" and 
-                not game.board[y][x].got_drag and not game.board[y][x].got_adv):
-                if game.board[y][x].got_trea is True :
+            elif (tev == "ClicDroit" and
+                  not game.board[y][x].got_drag and not game.board[y][x].got_adv):
+                if game.board[y][x].got_trea is True:
                     game.treasure = None
                     game.board[y][x].got_trea = False
                     graph.erase_entity(x, y)
-                else:
+                elif game.treasure is None:
                     game.treasure = struct.Treasure(y, x)
                     game.board[y][x].got_trea = True
                     graph.draw_treasure(game.treasure)

@@ -5,7 +5,7 @@ from collections import deque
 
 def find_path_depth(wis: struct.WallIsYou, x: int, y: int, path: set
                     ) -> Optional[tuple[list[tuple[int, int]], int]]:
-    """This function finds the adventurer's path 
+    """This function finds the adventurer's path
     to the treasure or dragon at the highest possible level.
 
     Backtracking solver.
@@ -53,9 +53,10 @@ def find_path_depth(wis: struct.WallIsYou, x: int, y: int, path: set
     return maxi_e + [(x, y)], maxi
 
 
-def find_path_breadth(wis: struct.WallIsYou, dest_x: int, dest_y: int) -> Optional[list[tuple[int, int]]]:
+def find_path_breadth(wis: struct.WallIsYou, dest_x: int, dest_y: int
+                      ) -> Optional[list[tuple[int, int]]]:
     """This function finds the adventurer's path to the coordinates if possible.
-    	
+
     You should rather use `find_path`
 
     Breadth-first search
@@ -66,7 +67,7 @@ def find_path_breadth(wis: struct.WallIsYou, dest_x: int, dest_y: int) -> Option
         dest_y (int): coordinate to go (height)
 
     Returns:
-        Optional[list[tuple[int, int]]]: The path if there is one 
+        Optional[list[tuple[int, int]]]: The path if there is one
     """
     closed = set()
 
@@ -95,7 +96,7 @@ def find_path_breadth(wis: struct.WallIsYou, dest_x: int, dest_y: int) -> Option
 
 
 def find_path(wis: struct.WallIsYou) -> Optional[list[tuple[int, int]]]:
-    """This function finds the adventurer's path 
+    """This function finds the adventurer's path
     to the treasure or dragon at the highest possible level.
 
     This function use `find_path_breadth`
