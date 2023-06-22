@@ -134,3 +134,18 @@ def readline_dragon(wiy: struct.WallIsYou, line: str) -> None:
         raise struct.DragonError(
             "The dragon is in a room already occupated"
         )
+
+
+def save(wiy: struct.WallIsYou) -> None:
+    with open(wiy.file[:-4] + "_save.wiy", "w", encoding="utf-8") as f:
+        for line in wiy.board:
+            f.write(save_line_maze(line) + "\n")
+
+        f.write(f"A {wiy.adv.y} {wiy.adv.x} {wiy.adv.level}\n")
+
+        for elem in wiy.drags:
+            f.write(f"D {elem.y} {elem.x} {elem.level}\n")
+
+
+def save_line_maze(line: list[struct.Room]) -> str:
+    return ''.join(elem.c for elem in line)

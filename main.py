@@ -62,6 +62,8 @@ if __name__ == "__main__":
             victory = game.victory()
             if victory:
                 break
+        elif tev == "Touche" and fltk.touche(ev) == "s":
+            file.save(game)
 
         if path is not None:
             graph.erase_path(path)
