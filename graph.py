@@ -210,16 +210,16 @@ def draw_walls(x: int, y: int, walls: tuple[bool, bool, bool, bool]) -> None:
             tab_f[i](x, y)
 
 
-def erase_walls(x: int, y: int, walls: tuple) -> None:
+def erase_walls(x: int, y: int, walls: tuple[bool, bool, bool, bool]) -> None:
     """Erase the walls of the room from the arg walls,
     that tell you which parts to erase.
 
     Takes the top-left coordinates of the room.
 
     Args:
-        x (int): Initial position (width)
-        y (int): Initial position (height)
-        walls (tuple[bool, bool, bool, bool]): (Top, Right, Bottom, Left)
+       x (int): Initial position (width)
+       y (int): Initial position (height)
+       walls (tuple[bool, bool, bool, bool]): (Top, Right, Bottom, Left)
             False if the room is closed to this direction
     """
     x = x * WIDTH_CASE
@@ -338,6 +338,14 @@ def draw_drags(lst_drags: list[struct.Dragon]) -> None:
         draw_entity(elem.x, elem.y, "./media/Dragon.png")
         draw_level(elem.x, elem.y, elem.level)
 
+def draw_drag(drag: struct.Dragon) -> None:
+    """Draws one dragons.
+
+    Args:
+        lst_drags (struct.Dragon): dragonss to draw
+    """
+    draw_entity(drag.x, drag.y, "./media/Dragon.png")
+    draw_level(drag.x, drag.y, drag.level)
 
 def draw_treasure(trea: struct.Treasure) -> None:
     """Draws the treasure.
@@ -357,8 +365,10 @@ def draw_game(wis: struct.WallIsYou) -> None:
     for y in range(wis.height):
         for x in range(wis.width):
             draw_room(x, y, wis.board[y][x])
-    draw_adv(wis.adv)
-    draw_drags(wis.drags)
+    if wis.adv:
+        draw_adv(wis.adv)
+    if wis.drags:
+        draw_drags(wis.drags)
     if wis.treasure:
         draw_treasure(wis.treasure)
 
@@ -421,3 +431,18 @@ def draw_victory(w_width: int, w_height: int) -> None:
     fltk.image(w_width // 2,
                w_height // 2,
                "./media/victory_screen.png")
+
+def update_level(x: int, y: int, lv: int) -> None:
+    """Ereases the old level of the entity and 
+    draws the new level of the entity at the top right
+    of the room.
+
+    Takes the top-left coordinates of the room.
+
+    Args:
+        x (int): Initial position of the room(width)
+        y (int): Initial position of the room(height)
+        lv (int): Level to draw
+    """
+    erase_level(x, y)
+    draw_level(x, y, lv)
