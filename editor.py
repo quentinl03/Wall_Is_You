@@ -29,7 +29,7 @@ def change_nb_walls_room(x: int, y: int, r: struct.Room):
     graph.erase_walls(x, y, r.val)
     # 1 for add because we want tu add one door
     nb_door = sum(r.val) % 4 + 1
-    r.val = tuple(i < nb_door for i in range(4))
+    r.val = tuple(i < nb_door for i in range(len(r.val)))
     r.c = struct.PIECES_R[r.val]
     graph.draw_walls(x, y, r.val)
 
@@ -81,6 +81,7 @@ def map_editor(wiy: struct.WallIsYou):
                     wiy.board[y][x].got_adv = True
                     wiy.adv.x = x
                     wiy.adv.y = y
+                    graph.draw_adv(wiy.adv)
             # level up on entity
             if touche == "Up":
                 r = wiy.board[y][x]
