@@ -41,56 +41,47 @@ def change_rotation_room(x: int, y: int, r: struct.Room):
 def map_editor(wiy: struct.WallIsYou):
     while ev := fltk.attend_ev():
         tev = fltk.type_ev(ev)
-        if tev == "Touche" and fltk.touche(ev) == "space":
+        if tev == "Quitte":
             break
-        if tev == "ClicGauche" or tev == "ClicDroit":
-            x = fltk.abscisse_souris() // (graph.WIDTH_CASE // graph.DIVISOR)
-            y = fltk.ordonnee_souris() // (graph.HEIGHT_CASE // graph.DIVISOR)
-            if tev == "ClicGauche":
-                change_rotation_room(x, y, wiy.board[y][x])
-            elif tev == "ClicDroit":
-                change_nb_walls_room(x, y, wiy.board[y][x])
-    print("phase 2")
-
-
-
-    while ev := fltk.attend_ev():
         x = fltk.abscisse_souris() // (graph.WIDTH_CASE // graph.DIVISOR)
         y = fltk.ordonnee_souris() // (graph.HEIGHT_CASE // graph.DIVISOR)
-        tev = fltk.type_ev(ev)
-        print(tev,x,y)
-        if tev == "Touche" and fltk.touche(ev) == "space":
-            break
 
-        if tev == "ClicGauche" and not wiy.board[y][x].got_adv:
-            if wiy.board[y][x].got_drag:
-                wiy.board[y][x].got_drag = False
-                graph.erase_entity(x, y)
-                graph.erase_level(x, y)
-                remove_drag(wiy, x, y)
+        if tev == "ClicGauche":
+            change_nb_walls_room(x, y, wiy.board[y][x])
+        if tev == "ClicDroit":
+            change_rotation_room(x, y, wiy.board[y][x])
 
-            else :
-                wiy.board[y][x].got_drag = True
-                drag = struct.Dragon(y, x)
-                wiy.drags.append(drag)
-                graph.draw_drag(drag)
-        elif tev == "ClicDroit" and not wiy.board[y][x].got_drag:
-            if wiy.adv is None:
-                wiy.adv = struct.Adventurer(y, x)
-                wiy.board[y][x].got_adv = True
-                graph.draw_adv(wiy.adv)
-            else :
-                wiy.board[wiy.adv.y][wiy.adv.x].got_adv = False
-                graph.erase_level(wiy.adv.x, wiy.adv.y)
-                graph.erase_entity(wiy.adv.x, wiy.adv.y)
-                wiy.board[y][x].got_adv = True
-                wiy.adv.x = x
-                wiy.adv.y = y
-                graph.draw_adv(wiy.adv)
-        
         elif tev == "Touche":
             touche = fltk.touche(ev)
-            print(touche)
+            if touche == "space":
+                break
+            # place/remove a dragon
+            if touche == "d" and not wiy.board[y][x].got_adv:
+                if wiy.board[y][x].got_drag:
+                    wiy.board[y][x].got_drag = False
+                    graph.erase_entity(x, y)
+                    graph.erase_level(x, y)
+                    remove_drag(wiy, x, y)
+                else :
+                    wiy.board[y][x].got_drag = True
+                    drag = struct.Dragon(y, x)
+                    wiy.drags.append(drag)
+                    graph.draw_drag(drag)
+
+            # place/remove the adventurer
+            if touche == "a" and not wiy.board[y][x].got_drag:
+                if wiy.adv is None:
+                    wiy.adv = struct.Adventurer(y, x)
+                    wiy.board[y][x].got_adv = True
+                    graph.draw_adv(wiy.adv)
+                else :
+                    wiy.board[wiy.adv.y][wiy.adv.x].got_adv = False
+                    graph.erase_level(wiy.adv.x, wiy.adv.y)
+                    graph.erase_entity(wiy.adv.x, wiy.adv.y)
+                    wiy.board[y][x].got_adv = True
+                    wiy.adv.x = x
+                    wiy.adv.y = y
+            # level up on entity
             if touche == "Up":
                 r = wiy.board[y][x]
                 if r.got_drag:
@@ -98,6 +89,8 @@ def map_editor(wiy: struct.WallIsYou):
                 if r.got_adv:
                     wiy.adv.level += 1
                     graph.update_level(x, y, wiy.adv.level)
+            
+            # level down on entity
             elif touche == "Down":
                 r = wiy.board[y][x]
                 if r.got_drag:
@@ -106,3 +99,18 @@ def map_editor(wiy: struct.WallIsYou):
                     wiy.adv.level -= 1
                     graph.update_level(x, y, wiy.adv.level)
         fltk.mise_a_jour()
+        
+    # print("phase 2")
+
+
+
+    # while ev := fltk.attend_ev():
+    #     x = fltk.abscisse_souris() // (graph.WIDTH_CASE // graph.DIVISOR)
+    #     y = fltk.ordonnee_souris() // (graph.HEIGHT_CASE // graph.DIVISOR)
+    #     tev = fltk.type_ev(ev)
+    #     print(tev,x,y)
+    #     if tev == "Touche" and fltk.touche(ev) == "space":
+    #         break
+
+
+        
