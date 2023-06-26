@@ -136,8 +136,11 @@ def readline_dragon(wiy: struct.WallIsYou, line: str) -> None:
         )
 
 
-def save(wiy: struct.WallIsYou) -> None:
-    with open(wiy.file[:-4] + "_save.wiy", "w", encoding="utf-8") as f:
+def save(wiy: struct.WallIsYou, is_save: bool) -> None:
+    to_add = ".wiy"
+    if is_save:
+        to_add = "_save" + to_add
+    with open(wiy.file[:-4] + to_add, "w", encoding="utf-8") as f:
         for line in wiy.board:
             f.write(save_line_maze(line) + "\n")
 

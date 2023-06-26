@@ -338,6 +338,7 @@ def draw_drags(lst_drags: list[struct.Dragon]) -> None:
         draw_entity(elem.x, elem.y, "./media/Dragon.png")
         draw_level(elem.x, elem.y, elem.level)
 
+
 def draw_drag(drag: struct.Dragon) -> None:
     """Draws one dragons.
 
@@ -346,6 +347,7 @@ def draw_drag(drag: struct.Dragon) -> None:
     """
     draw_entity(drag.x, drag.y, "./media/Dragon.png")
     draw_level(drag.x, drag.y, drag.level)
+
 
 def draw_treasure(trea: struct.Treasure) -> None:
     """Draws the treasure.
@@ -432,8 +434,9 @@ def draw_victory(w_width: int, w_height: int) -> None:
                w_height // 2,
                "./media/victory_screen.png")
 
+
 def update_level(x: int, y: int, lv: int) -> None:
-    """Ereases the old level of the entity and 
+    """Ereases the old level of the entity and
     draws the new level of the entity at the top right
     of the room.
 

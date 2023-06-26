@@ -1,9 +1,12 @@
 import structure as struct
 import graph
 import fltk
+import file
+
 
 def init_from_size(x: int, y: int) -> list[list[struct.Room]]:
     return [[struct.Room("╬") for __ in range(x)]for _ in range(y)]
+
 
 def levelup_drag(wiy: struct.WallIsYou, x: int, y: int) -> None:
     for elem in wiy.drags:
@@ -12,18 +15,21 @@ def levelup_drag(wiy: struct.WallIsYou, x: int, y: int) -> None:
             graph.update_level(x, y, elem.level)
             return
 
+
 def leveldown_drag(wiy: struct.WallIsYou, x: int, y: int) -> None:
     for elem in wiy.drags:
         if x == elem.x and y == elem.y and elem.level > 1:
             elem.level -= 1
             graph.update_level(x, y, elem.level)
             return
-        
+
+
 def remove_drag(wiy: struct.WallIsYou, x: int, y: int) -> None:
     for elem in wiy.drags:
         if x == elem.x and y == elem.y:
             wiy.drags.remove(elem)
             return
+
 
 def change_nb_walls_room(x: int, y: int, r: struct.Room):
     graph.erase_walls(x, y, r.val)
@@ -33,16 +39,18 @@ def change_nb_walls_room(x: int, y: int, r: struct.Room):
     r.c = struct.PIECES_R[r.val]
     graph.draw_walls(x, y, r.val)
 
+
 def change_rotation_room(x: int, y: int, r: struct.Room):
     graph.erase_walls(x, y, r.val)
     r.rotate()
     graph.draw_walls(x, y, r.val)
 
-def map_editor(wiy: struct.WallIsYou):
+
+def map_editor(wiy: struct.WallIsYou) -> bool:
     while ev := fltk.attend_ev():
         tev = fltk.type_ev(ev)
         if tev == "Quitte":
-            break
+            return False
         x = fltk.abscisse_souris() // (graph.WIDTH_CASE // graph.DIVISOR)
         y = fltk.ordonnee_souris() // (graph.HEIGHT_CASE // graph.DIVISOR)
 
@@ -62,7 +70,7 @@ def map_editor(wiy: struct.WallIsYou):
                     graph.erase_entity(x, y)
                     graph.erase_level(x, y)
                     remove_drag(wiy, x, y)
-                else :
+                else:
                     wiy.board[y][x].got_drag = True
                     drag = struct.Dragon(y, x)
                     wiy.drags.append(drag)
@@ -74,7 +82,7 @@ def map_editor(wiy: struct.WallIsYou):
                     wiy.adv = struct.Adventurer(y, x)
                     wiy.board[y][x].got_adv = True
                     graph.draw_adv(wiy.adv)
-                else :
+                else:
                     wiy.board[wiy.adv.y][wiy.adv.x].got_adv = False
                     graph.erase_level(wiy.adv.x, wiy.adv.y)
                     graph.erase_entity(wiy.adv.x, wiy.adv.y)
@@ -90,7 +98,7 @@ def map_editor(wiy: struct.WallIsYou):
                 if r.got_adv:
                     wiy.adv.level += 1
                     graph.update_level(x, y, wiy.adv.level)
-            
+
             # level down on entity
             elif touche == "Down":
                 r = wiy.board[y][x]
@@ -100,18 +108,5 @@ def map_editor(wiy: struct.WallIsYou):
                     wiy.adv.level -= 1
                     graph.update_level(x, y, wiy.adv.level)
         fltk.mise_a_jour()
-        
-    # print("phase 2")
-
-
-
-    # while ev := fltk.attend_ev():
-    #     x = fltk.abscisse_souris() // (graph.WIDTH_CASE // graph.DIVISOR)
-    #     y = fltk.ordonnee_souris() // (graph.HEIGHT_CASE // graph.DIVISOR)
-    #     tev = fltk.type_ev(ev)
-    #     print(tev,x,y)
-    #     if tev == "Touche" and fltk.touche(ev) == "space":
-    #         break
-
-
-        
+    file.save(wiy, False)
+    return True
