@@ -137,6 +137,13 @@ def readline_dragon(wiy: struct.WallIsYou, line: str) -> None:
 
 
 def save(wiy: struct.WallIsYou, is_save: bool) -> None:
+    """Saves the actual state of the game.
+
+    Args:
+        wiy (struct.WallIsYou): Game to save
+        is_save (bool): If manual save please choose True
+                        false is for the map editor
+    """
     to_add = ".wiy"
     if is_save:
         to_add = "_save" + to_add
@@ -151,4 +158,12 @@ def save(wiy: struct.WallIsYou, is_save: bool) -> None:
 
 
 def save_line_maze(line: list[struct.Room]) -> str:
+    """Generate a string which represent a line of the maze.
+
+    Args:
+        line (list[struct.Room]): Line of the maze
+
+    Returns:
+        str: string representing the line given in parameter
+    """
     return ''.join(elem.c for elem in line)

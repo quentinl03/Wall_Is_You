@@ -8,11 +8,22 @@ import editor
 
 
 def init_graph(wis: struct.WallIsYou) -> None:
+    """Initialise the fltk window.
+
+    Args:
+        wis (struct.WallIsYou): structure where we get
+                        the height and width of the game
+    """
     fltk.cree_fenetre(wis.width * graph.WIDTH_CASE, wis.height * graph.HEIGHT_CASE)
     graph.draw_game(wis)
 
 
 def parser() -> dict:
+    """Use argparse to read arguments given.
+
+    Returns:
+        dict: set generated with argparse
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("map",
                         help="Path to file to open/write")

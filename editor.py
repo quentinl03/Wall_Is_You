@@ -5,10 +5,27 @@ import file
 
 
 def init_from_size(x: int, y: int) -> list[list[struct.Room]]:
+    """Creates a empty map with size given in arguments.
+
+    Args:
+        x (int): board width
+        y (int): board height
+
+    Returns:
+        list[list[struct.Room]]: Empty board
+    """
     return [[struct.Room("╬") for __ in range(x)]for _ in range(y)]
 
 
 def levelup_drag(wiy: struct.WallIsYou, x: int, y: int) -> None:
+    """Increase by one step the level of the dragon.
+    If there is no dragons at this coordinates do noting.
+
+    Args:
+        wiy (struct.WallIsYou): Structure with dragons
+        x (int): Initial position (width)
+        y (int): Initial position (height)
+    """
     for elem in wiy.drags:
         if x == elem.x and y == elem.y:
             elem.level += 1
@@ -17,6 +34,14 @@ def levelup_drag(wiy: struct.WallIsYou, x: int, y: int) -> None:
 
 
 def leveldown_drag(wiy: struct.WallIsYou, x: int, y: int) -> None:
+    """Decrease by one step the level of the dragon.
+    If there is no dragons at this coordinates do noting.
+
+    Args:
+        wiy (struct.WallIsYou): Structure with dragons
+        x (int): Initial position (width)
+        y (int): Initial position (height)
+    """
     for elem in wiy.drags:
         if x == elem.x and y == elem.y and elem.level > 1:
             elem.level -= 1
@@ -25,6 +50,14 @@ def leveldown_drag(wiy: struct.WallIsYou, x: int, y: int) -> None:
 
 
 def remove_drag(wiy: struct.WallIsYou, x: int, y: int) -> None:
+    """Remove the dragon at this coordinate.
+    If there is no dragons at this coordinates do noting.
+
+    Args:
+        wiy (struct.WallIsYou): Structure with dragons
+        x (int): Initial position (width)
+        y (int): Initial position (height)
+    """
     for elem in wiy.drags:
         if x == elem.x and y == elem.y:
             wiy.drags.remove(elem)
@@ -32,6 +65,14 @@ def remove_drag(wiy: struct.WallIsYou, x: int, y: int) -> None:
 
 
 def change_nb_walls_room(x: int, y: int, r: struct.Room):
+    """Decrease by one the number of walls of the room.
+    If there is no wall it get back to 3 walls
+
+    Args:
+        x (int): Initial position (width)
+        y (int): Initial position (height)
+        r (struct.Room): Room to modify
+    """
     graph.erase_walls(x, y, r.val)
     # 1 for add because we want tu add one door
     nb_door = sum(r.val) % 4 + 1
@@ -47,6 +88,15 @@ def change_rotation_room(x: int, y: int, r: struct.Room):
 
 
 def map_editor(wiy: struct.WallIsYou) -> bool:
+    """Take a structure with an empty map and enables you
+    to modify it.
+
+    Args:
+        wiy (struct.WallIsYou): game to edit
+
+    Returns:
+        bool: Telle if the user want to quit before finishing the map.
+    """
     while ev := fltk.attend_ev():
         tev = fltk.type_ev(ev)
         if tev == "Quitte":

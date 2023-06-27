@@ -343,7 +343,7 @@ def draw_drag(drag: struct.Dragon) -> None:
     """Draws one dragons.
 
     Args:
-        lst_drags (struct.Dragon): dragonss to draw
+        lst_drags (struct.Dragon): dragons to draw
     """
     draw_entity(drag.x, drag.y, "./media/Dragon.png")
     draw_level(drag.x, drag.y, drag.level)
