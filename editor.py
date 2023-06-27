@@ -5,7 +5,7 @@ import file
 
 
 def init_from_size(x: int, y: int) -> list[list[struct.Room]]:
-    """Creates a empty map with size given in arguments.
+    """Creates an empty map with given size in arguments.
 
     Args:
         x (int): board width
@@ -66,7 +66,7 @@ def remove_drag(wiy: struct.WallIsYou, x: int, y: int) -> None:
 
 def change_nb_walls_room(x: int, y: int, r: struct.Room):
     """Decrease by one the number of walls of the room.
-    If there is no wall it get back to 3 walls
+    If there is no wall it get back to 3 walls.
 
     Args:
         x (int): Initial position (width)
@@ -82,6 +82,12 @@ def change_nb_walls_room(x: int, y: int, r: struct.Room):
 
 
 def change_rotation_room(x: int, y: int, r: struct.Room):
+    """Rotate the room, and change it visually.
+    Args:
+        x (int): Initial position (width)
+        y (int): Initial position (height)
+        r (struct.Room): Room to rotate
+    """
     graph.erase_walls(x, y, r.val)
     r.rotate()
     graph.draw_walls(x, y, r.val)
@@ -95,7 +101,7 @@ def map_editor(wiy: struct.WallIsYou) -> bool:
         wiy (struct.WallIsYou): game to edit
 
     Returns:
-        bool: Telle if the user want to quit before finishing the map.
+        bool: Tells if the user want to quit before finishing the map.
     """
     while ev := fltk.attend_ev():
         tev = fltk.type_ev(ev)
